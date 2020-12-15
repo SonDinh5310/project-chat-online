@@ -4,9 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-firestore.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyA2enbSbUAq3LfTJtU_Ncr_CuPH1dXSe1w",
+        authDomain: "ci53-b1a9b.firebaseapp.com",
+        projectId: "ci53-b1a9b",
+        storageBucket: "ci53-b1a9b.appspot.com",
+        messagingSenderId: "136194273429",
+        appId: "1:136194273429:web:eac9c561b13ec51ac82b9c",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"
+      integrity="sha512-nOQuvD9nKirvxDdvQ9OMqe2dgapbPB7vYAMrzJihw5m+aNcf0dX53m6YxM4LgA9u8e9eg9QX+/+mPu8kCNpV2A=="
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body style="background-color: #1995ad">
-    <register-form></register-form>
+    <login-form></login-form>
     <script src="./js/app.js" type="module"></script>
   </body>
 </html>

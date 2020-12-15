@@ -1,3 +1,6 @@
+import InputWrapper from "./inputWrapper.js";
+import validateEmail from "../utils.js";
+
 const $template = document.createElement("template");
 
 $template.innerHTML = /*html*/ `
@@ -46,26 +49,67 @@ export default class RegisterForm extends HTMLElement {
     );
   }
 
-  validate() {
-    if (this.$email.value() === "") {
-      alert("Email error");
-    } else if (this.$name.value() === "") {
-      alert("Name error");
-    } else if (this.$password.value() === "") {
-      alert("Pass error");
-    } else if (this.$passwordConfirmation.value() === "") {
-      alert("Password retype error");
-    } else if (this.$password.value() !== this.$passwordConfirmation.value()) {
-      alert("Password and password-retype not match");
-    }
-  }
-
   connectedCallback() {
-    this.$form.onsubmit = (event) => {
+    this.$form.onsubmit = async (event) => {
       event.preventDefault();
-      this.validate();
-      // console.log(this.$email.value());
-      alert("register successful");
+      let email = this.$email.value();
+      let name = this.$name.value();
+      let password = this.$password.value();
+      let passwordConfirmation = this.$passwordConfirmation.value();
+
+      let isPassed =
+        (InputWrapper.validate(
+          this.$email,
+          (value) => value !== "",
+          "Nhap vao email"
+        ) &&
+          InputWrapper.validate(
+            this.$email,
+            (value) => validateEmail(value),
+            "Dinh dang email khong hop le"
+          )) &
+        InputWrapper.validate(
+          this.$name,
+          (value) => value !== "",
+          "Nhap vao ten"
+        ) &
+        InputWrapper.validate(
+          this.$password,
+          (value) => value !== "",
+          "Nhap vao password"
+        ) &
+        (InputWrapper.validate(
+          this.$passwordConfirmation,
+          (value) => value !== "",
+          "Nhap vao password confirmation"
+        ) &&
+          InputWrapper.validate(
+            this.$passwordConfirmation,
+            (value) => value === password,
+            "xac nhan mat khau khong dung"
+          ));
+      if (isPassed) {
+        let result = await firebase
+          .firestore()
+          .collection("users")
+          .where("email", "==", email)
+          .get();
+        console.log(result);
+
+        if (result.empty) {
+          firebase
+            .firestore()
+            .collection("users")
+            .add({
+              name: name,
+              email: email,
+              password: CryptoJS.MD5(password).toString(),
+            });
+        } else {
+          alert("Email da co nguoi su dung");
+        }
+      }
+      console.log(isPassed);
     };
   }
 }
