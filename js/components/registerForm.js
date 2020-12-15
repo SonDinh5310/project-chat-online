@@ -1,6 +1,6 @@
 const $template = document.createElement("template");
 
-$template.innerHTML = /*html */ `
+$template.innerHTML = /*html*/ `
     <link rel="stylesheet" href="/css/registerForm.css" />
     <form id="register-form">
     <h2>Dang ky tai khoan</h2>
@@ -38,17 +38,34 @@ export default class RegisterForm extends HTMLElement {
     this.shadowRoot.appendChild($template.content.cloneNode(true));
     this.$form = this.shadowRoot.getElementById("register-form");
 
-    (this.$email = this), this.shadowRoot.getElementById("email");
-    (this.$name = this), this.shadowRoot.getElementById("name");
-    (this.$password = this), this.shadowRoot.getElementById("password");
-    (this.$passwordConfirmation = this),
-      this.shadowRoot.getElementById("password-confirmation");
+    this.$email = this.shadowRoot.getElementById("email");
+    this.$name = this.shadowRoot.getElementById("name");
+    this.$password = this.shadowRoot.getElementById("password");
+    this.$passwordConfirmation = this.shadowRoot.getElementById(
+      "password-confirmation"
+    );
+  }
+
+  validate() {
+    if (this.$email.value() === "") {
+      alert("Email error");
+    } else if (this.$name.value() === "") {
+      alert("Name error");
+    } else if (this.$password.value() === "") {
+      alert("Pass error");
+    } else if (this.$passwordConfirmation.value() === "") {
+      alert("Password retype error");
+    } else if (this.$password.value() !== this.$passwordConfirmation.value()) {
+      alert("Password and password-retype not match");
+    }
   }
 
   connectedCallback() {
     this.$form.onsubmit = (event) => {
       event.preventDefault();
-      console.log(this.$email.value());
+      this.validate();
+      // console.log(this.$email.value());
+      alert("register successful");
     };
   }
 }
