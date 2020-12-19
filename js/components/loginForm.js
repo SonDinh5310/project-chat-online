@@ -17,7 +17,7 @@ $template.innerHTML = /*html*/ `
     <button id="login-btn">Dang nhap</button>
 
     <div id="to-register">
-        Ban chua co tai khoan ? <b><a href="#">Dang ky</a></b>
+        Ban chua co tai khoan ? <b><a href="#!/sign-up">Dang ky</a></b>
     </div>
     </form>
 `;
@@ -61,7 +61,7 @@ export default class LoginForm extends HTMLElement {
         if (result.empty) {
           alert("Email hoac mat kha khong chinh sac");
         } else {
-          alert("Danng nhap thanh cong");
+          router.navigate("/chat");
         }
       }
       console.log(isPassed);

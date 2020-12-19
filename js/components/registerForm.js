@@ -29,7 +29,7 @@ $template.innerHTML = /*html*/ `
     <button id="register-btn">Dang ki</button>
 
     <div id="to-login">
-        Ban da co tai khoan ? <b><a href="#">Dang nhap</a></b>
+        Ban da co tai khoan ? <b><a href="#!/sign-in">Dang nhap</a></b>
     </div>
     </form>
 `;
