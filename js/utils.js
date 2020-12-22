@@ -12,7 +12,22 @@ export function getDataFromDoc(doc, excepts = []) {
 
 //* Lam min du lieu cho 1 tap document
 export function getDatafromDocs(docs, excepts = []) {
-  return doc.map(function (doc) {
+  return docs.map(function (doc) {
     return getDataFromDoc(doc, excepts);
   });
+}
+
+//* Luu thong tin nguoi dung hien tai truc tiep vao localStorage
+export function saveCurrentUser(user) {
+  localStorage.setItem("current-user", JSON.stringify(user));
+}
+
+//* Lay thong tin nguoi dung hien ai tu localStorage
+export function getCurrentUser() {
+  let result = localStorage.getItem("current-user");
+
+  if (result) {
+    return JSON.parse(result);
+  }
+  return null;
 }

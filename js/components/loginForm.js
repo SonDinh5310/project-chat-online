@@ -1,3 +1,4 @@
+import { getDataFromDoc, saveCurrentUser } from "../utils.js";
 import InputWrapper from "./inputWrapper.js";
 // import validateEmail from "../utils.js";
 
@@ -61,6 +62,8 @@ export default class LoginForm extends HTMLElement {
         if (result.empty) {
           alert("Email hoac mat kha khong chinh sac");
         } else {
+          console.log(result);
+          saveCurrentUser(getDataFromDoc(result.docs[0]));
           router.navigate("/chat");
         }
       }

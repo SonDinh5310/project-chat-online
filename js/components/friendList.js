@@ -1,6 +1,6 @@
 import FriendContainer from "./friendContainer.js";
 import InputWrapper from "./inputWrapper.js";
-import { getDataFromDoc, getDatafromDocs } from "../utils.js";
+import { getCurrentUser, getDataFromDoc, getDatafromDocs } from "../utils.js";
 
 const $template = document.createElement("template");
 
@@ -75,8 +75,14 @@ export default class FriendList extends HTMLElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === "data") {
       let friendsData = JSON.parse(newValue);
+
+      this.$friendList.innerHTML = "";
       for (let friendData of friendsData) {
-        let $friendContainer = new FriendContainer(friendData.name);
+        let $friendContainer = new FriendContainer(
+          friendData.name,
+          friendData.email,
+          friendData.isFriend
+        );
         this.$friendList.appendChild($friendContainer);
       }
     }
@@ -100,7 +106,32 @@ export default class FriendList extends HTMLElement {
           .collection("users")
           .where("name", "==", keyword)
           .get();
-        console.log(getDatafromDocs(result.docs));
+        let data = getDatafromDocs(result.docs);
+        //* Kiem tra
+        for (let friendData of data) {
+          let currentUser = getCurrentUser();
+
+          result = await firebase
+            .firestore()
+            .collection("friends")
+            .where("relation", "array-contains", currentUser.id)
+            .get();
+
+          let existFriends = getDatafromDocs(result.docs);
+
+          for (let friend of data) {
+            let exist = existFriends.find(function (existFriend) {
+              let relation = existFriend.relation;
+              return (
+                relation[0] == friendData.id || relation[1] == friendData.id
+              );
+            });
+
+            friendData.isFriend = exist ? true : false;
+          }
+          console.log(data);
+          this.setAttribute("data", JSON.stringify(data));
+        }
       }
     };
   }
