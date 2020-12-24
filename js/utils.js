@@ -12,28 +12,22 @@ export function getDataFromDoc(doc, excepts = []) {
 
 //* Lam min du lieu cho 1 tap document
 export function getDatafromDocs(docs, excepts = []) {
-<<<<<<< HEAD
-  return docs.map(function (doc) {
-    return getDataFromDoc(doc, excepts);
-  });
-=======
     return docs.map(function (doc) {
         return getDataFromDoc(doc, excepts);
     });
->>>>>>> 4ef989924c7f654d64099bc390e6ec51db075bfe
 }
 
 //* Luu thong tin nguoi dung hien tai truc tiep vao localStorage
 export function saveCurrentUser(user) {
-  localStorage.setItem("current-user", JSON.stringify(user));
+    localStorage.setItem("current-user", JSON.stringify(user));
 }
 
 //* Lay thong tin nguoi dung hien ai tu localStorage
 export function getCurrentUser() {
-  let result = localStorage.getItem("current-user");
+    let result = localStorage.getItem("current-user");
 
-  if (result) {
-    return JSON.parse(result);
-  }
-  return null;
+    if (result) {
+        return JSON.parse(result);
+    }
+    return null;
 }
