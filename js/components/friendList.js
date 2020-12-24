@@ -79,6 +79,7 @@ export default class FriendList extends HTMLElement {
             this.$friendList.innerHTML = "";
             for (let friendData of friendsData) {
                 let $friendContainer = new FriendContainer(
+                    friendData.id,
                     friendData.name,
                     friendData.email,
                     friendData.isFriend
