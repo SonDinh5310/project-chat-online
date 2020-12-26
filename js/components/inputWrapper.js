@@ -1,7 +1,7 @@
 const $template = document.createElement("template");
 
 $template.innerHTML = /*html */ `
-<link rel="stylesheet" href="/css/inputWrapper.css" />
+<link rel="stylesheet" href="../../css/inputWrapper.css" />
 <div id="input-wrapper">
 <label id="input-label" for="#input-main">Ten Dang Ky</label>
 <input id="input-main" type="text">

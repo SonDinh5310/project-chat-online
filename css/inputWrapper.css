@@ -9,19 +9,17 @@
 
 #input-label {
   font-size: 18;
-  /* color: black; */
   color: gray;
 }
 
 #input-main {
   height: 40px;
   box-sizing: border-box;
-  padding: auto 10px;
+  padding: 10px;
   border: 1px solid #ececec;
   border-radius: 5px;
   color: black;
   outline: none;
-  /* width: 500px; */
 }
 
 #input-error {
