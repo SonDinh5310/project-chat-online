@@ -13,6 +13,7 @@ $template.innerHTML = /*html */ `
             color: white;
             max-width: 50%;
             word-break: break-word;
+            margin: 2px;
         }
 
         .owned {
@@ -26,34 +27,36 @@ $template.innerHTML = /*html */ `
 `;
 
 export default class MessageContainer extends HTMLElement {
-  constructor(content, owned, dateModifed) {
-    super();
-    this.attachShadow({ mode: "open" });
-    this.shadowRoot.appendChild($template.content.cloneNode(true));
+    constructor(content, owned, dateModifed) {
+        super();
+        this.attachShadow({ mode: "open" });
+        this.shadowRoot.appendChild($template.content.cloneNode(true));
 
-    this.$messageContent = this.shadowRoot.getElementById("message-content");
-    this.$messageContainer = this.shadowRoot.getElementById(
-      "message-container"
-    );
+        this.$messageContent = this.shadowRoot.getElementById(
+            "message-content"
+        );
+        this.$messageContainer = this.shadowRoot.getElementById(
+            "message-container"
+        );
 
-    this.setAttribute("content", content);
-    this.setAttribute("owned", owned);
-    this.setAttribute("date-modified", dateModifed);
-  }
-
-  static get observedAttributes() {
-    return ["content", "owned", "date-modified"];
-  }
-
-  attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName == "content") {
-      this.$messageContent.innerHTML = newValue;
-    } else if (attrName == "owned") {
-      if (newValue == "true") {
-        this.$messageContainer.className = "owned";
-      }
+        this.setAttribute("content", content);
+        this.setAttribute("owned", owned);
+        this.setAttribute("date-modified", dateModifed);
     }
-  }
+
+    static get observedAttributes() {
+        return ["content", "owned", "date-modified"];
+    }
+
+    attributeChangedCallback(attrName, oldValue, newValue) {
+        if (attrName == "content") {
+            this.$messageContent.innerHTML = newValue;
+        } else if (attrName == "owned") {
+            if (newValue == "true") {
+                this.$messageContainer.className = "owned";
+            }
+        }
+    }
 }
 
 window.customElements.define("message-container", MessageContainer);

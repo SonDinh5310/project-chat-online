@@ -1,28 +1,29 @@
 * {
-  font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 #input-wrapper {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    margin: 15px auto;
 }
 
 #input-label {
-  font-size: 18;
-  color: gray;
+    font-size: 18;
+    color: gray;
 }
 
 #input-main {
-  height: 40px;
-  box-sizing: border-box;
-  padding: 10px;
-  border: 1px solid #ececec;
-  border-radius: 5px;
-  color: black;
-  outline: none;
+    height: 40px;
+    box-sizing: border-box;
+    padding: 0px 10px;
+    border: 1px solid #ececec;
+    border-radius: 5px;
+    color: black;
+    outline: none;
 }
 
 #input-error {
-  font-size: 14px;
-  color: red;
+    font-size: 14px;
+    color: #dc4d41;
 }

@@ -11,7 +11,7 @@ $template.innerHTML = /*html */ `
 
 #friend-container {
     padding: 15px;
-    border: solid 1px #cccccc;
+    border: 1px solid #cccccc;
     display:flex;
     justify-content: space-between;
     align-items: center;
