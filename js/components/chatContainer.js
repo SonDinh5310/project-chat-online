@@ -1,3 +1,6 @@
+import { getCurrentUser, getDataFromDoc, getDatafromDocs } from "../utils.js";
+import LoginForm from "./loginForm.js";
+
 const $template = document.createElement("template");
 
 $template.innerHTML = /*html */ `
@@ -58,41 +61,111 @@ $template.innerHTML = /*html */ `
     </div>
 `;
 
-let fakeMessageList = [
-    { content: "xin chao", owned: true, dateModified: "2020/12/26" },
-    { content: "do u speak English", owned: false, dateModified: "2020/12/26" },
-    { content: "co", owned: true, dateModified: "2020/12/26" },
-    { content: "English plz!", owned: false, dateModified: "2020/12/26" },
-    { content: "ok man. Hi there", owned: true, dateModified: "2020/12/26" },
-    { content: "chao cau", owned: false, dateModified: "2020/12/26" },
-    { content: "chao cau", owned: false, dateModified: "2020/12/26" },
-    { content: "chao cau", owned: false, dateModified: "2020/12/26" },
-    { content: "chao cau", owned: false, dateModified: "2020/12/26" },
-    { content: "chao cau", owned: false, dateModified: "2020/12/26" },
-    { content: "chao cau", owned: false, dateModified: "2020/12/26" },
-    { content: "chao cau", owned: false, dateModified: "2020/12/26" },
-    { content: "chao cau", owned: false, dateModified: "2020/12/26" },
-];
+// let fakeMessageList = [
+//     { content: "xin chao", owned: true, dateModified: "2020/12/26" },
+//     { content: "do u speak English", owned: false, dateModified: "2020/12/26" },
+//     { content: "co", owned: true, dateModified: "2020/12/26" },
+//     { content: "English plz!", owned: false, dateModified: "2020/12/26" },
+//     { content: "ok man. Hi there", owned: true, dateModified: "2020/12/26" },
+//     { content: "chao cau", owned: false, dateModified: "2020/12/26" },
+//     { content: "chao cau", owned: false, dateModified: "2020/12/26" },
+//     { content: "chao cau", owned: false, dateModified: "2020/12/26" },
+//     { content: "chao cau", owned: false, dateModified: "2020/12/26" },
+//     { content: "chao cau", owned: false, dateModified: "2020/12/26" },
+//     { content: "chao cau", owned: false, dateModified: "2020/12/26" },
+//     { content: "chao cau", owned: false, dateModified: "2020/12/26" },
+//     { content: "chao cau", owned: false, dateModified: "2020/12/26" },
+// ];
 
 export default class ChatContainer extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: "open" });
-        this.shadowRoot.appendChild($template.content.cloneNode(true));
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this.shadowRoot.appendChild($template.content.cloneNode(true));
 
-        this.$chatInfo = this.shadowRoot.getElementById("chat-info");
-        this.$messageList = this.shadowRoot.querySelector("message-list");
-        this.$sendMessageForm = this.shadowRoot.getElementById(
-            "send-message-form"
-        );
-        this.$messageContent = this.shadowRoot.getElementById(
-            "message-content"
-        );
-    }
+    this.$chatInfo = this.shadowRoot.getElementById("chat-info");
+    this.$messageList = this.shadowRoot.querySelector("message-list");
+    this.$sendMessageForm = this.shadowRoot.getElementById("send-message-form");
+    this.$messageContent = this.shadowRoot.getElementById("message-content");
+  }
 
-    connectedCallback() {
-        this.$messageList.setAttribute("data", JSON.stringify(fakeMessageList));
+  static get observedAttributes() {
+    return ["current-chat"];
+  }
+
+  connectedCallback() {
+    // this.$messageList.setAttribute("data", JSON.stringify(fakeMessageList));
+    this.$sendMessageForm.onsubmit = (event) => {
+      event.preventDefault();
+      let content = this.$messageContent.value();
+      if (content !== "") {
+        this.sendMessage(content);
+        this.$messageContent.value("");
+      } else {
+        alert("nhap vao noi dung tin nhan");
+      }
+    };
+  }
+
+  async attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === "current-chat") {
+      console.log("ban dang chat voi" + newValue);
+      let friendInfo = await this.loadFriendInfo();
+      this.$chatInfo.innerHTML = friendInfo.name;
+      this.loadMessages();
     }
+  }
+
+  async loadFriendInfo() {
+    let friendId = this.getAttribute("current-chat");
+    let result = await firebase
+      .firestore()
+      .collection("users")
+      .doc(friendId)
+      .get();
+
+    return getDataFromDoc(result);
+  }
+  loadMessages() {
+    let currentUser = getCurrentUser();
+    let friendId = this.getAttribute("current-chat");
+    firebase
+      .firestore()
+      .collection("messages")
+      .where("owner", "in", [currentUser.id, friendId])
+      .onSnapshot((result) => {
+        let rawData = getDatafromDocs(result.docs);
+
+        let messagesData = rawData.filter((messageData) => {
+          return (
+            messageData.receiver === currentUser.id ||
+            messageData.receiver === friendId
+          );
+        });
+
+        console.log(messagesData);
+
+        this.$messageList.setAttribute("data", JSON.stringify(messagesData));
+      });
+  }
+  async sendMessage(content) {
+    let currentUser = getCurrentUser();
+    console.log({
+      content: content,
+      dateModified: new Date().toISOString(),
+      owner: currentUser.id,
+      receiver: this.getAttribute("current-chat"),
+    });
+    await firebase
+      .firestore()
+      .collection("messages")
+      .add({
+        content: content,
+        dateModified: new Date().toISOString(),
+        owner: currentUser.id,
+        receiver: this.getAttribute("current-chat"),
+      });
+  }
 }
 
 window.customElements.define("chat-container", ChatContainer);

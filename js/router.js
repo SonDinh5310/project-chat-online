@@ -1,24 +1,33 @@
-var root = null;
-var useHash = true; // Defaults to: false
-var hash = "#!"; // Defaults to: '#'
-var router = new Navigo(root, useHash, hash);
+import ChatScreen from "./screens/chatScreen.js";
+
+let $app = document.getElementById("app");
+let root = null;
+let useHash = true; // Defaults to: false
+let hash = "#!"; // Defaults to: '#'
+let router = new Navigo(root, useHash, hash);
 
 router
   .on("/sign-up", function () {
-    document.getElementById("app").innerHTML =
-      "<register-form></register-form>";
+    $app.innerHTML = "<register-form></register-form>";
     console.log("Ban dang o chuc nang dang ky");
   })
   .resolve();
 router
   .on("/sign-in", function () {
-    document.getElementById("app").innerHTML = "<login-form></login-form>";
+    $app.innerHTML = "<login-form></login-form>";
     console.log("Ban dang o chuc nang dang nhap");
   })
   .resolve();
 
-router.on("/chat", function () {
-  document.getElementById("app").innerHTML =
-    "<friend-container></friend-container>";
-});
+router
+  .on("/chat/:id", function (params) {
+    $app.innerHTML = " ";
+    let $chatScreen = new ChatScreen();
+    let $chatContainer = $chatScreen.shadowRoot.querySelector("chat-container");
+    console.log($chatContainer);
+    console.log(params);
+    $chatContainer.setAttribute("current-chat", params.id);
+    $app.appendChild($chatScreen);
+  })
+  .resolve();
 window.router = router;

@@ -30,6 +30,7 @@ export default class MessageList extends HTMLElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName == "data") {
       let data = JSON.parse(newValue);
+      this.$messageList.innerHTML = "";
       for (let messageData of data) {
         let $message = new MessageContainer(
           messageData.content,
