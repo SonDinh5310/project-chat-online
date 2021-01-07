@@ -8,7 +8,7 @@ $template.innerHTML = /*html */ `
             font-family: Arial;
             font-size: 15px;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 20px;
             background-color: #1995ad;
             color: white;
             max-width: 50%;
@@ -22,7 +22,7 @@ $template.innerHTML = /*html */ `
     </style>
 
     <div id="message-container">
-        <span id='message-content'>Hello</span>
+        <span id='message-content'></span>
     </div>
 `;
 

@@ -15,6 +15,7 @@ $template.innerHTML = /*html */ `
     display:flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
 }
 
 #friend-email {
@@ -31,58 +32,58 @@ $template.innerHTML = /*html */ `
 `;
 
 export default class FriendContainer extends HTMLElement {
-  constructor(id, name, email, isFriend) {
-    super();
-    this.attachShadow({ mode: "open" });
-    this.shadowRoot.appendChild($template.content.cloneNode(true));
-    this.$friendName = this.shadowRoot.getElementById("friend-name");
-    this.$friendEmail = this.shadowRoot.getElementById("friend-email");
-    this.$makeFriend = this.shadowRoot.getElementById("make-friend-button");
+    constructor(id, name, email, isFriend) {
+        super();
+        this.attachShadow({ mode: "open" });
+        this.shadowRoot.appendChild($template.content.cloneNode(true));
+        this.$friendName = this.shadowRoot.getElementById("friend-name");
+        this.$friendEmail = this.shadowRoot.getElementById("friend-email");
+        this.$makeFriend = this.shadowRoot.getElementById("make-friend-button");
 
-    this.id = id;
-    this.setAttribute("name", name);
-    this.setAttribute("email", email);
-    this.setAttribute("is-friend", isFriend);
-  }
-
-  static get observedAttributes() {
-    return ["name", "email", "is-friend"];
-  }
-
-  connectedCallback() {
-    this.onclick = () => {
-      console.log("chuyen sang chat voi " + this.getAttribute("name"));
-      router.navigate("/chat/" + this.id);
-    };
-
-    this.$makeFriend.onclick = async () => {
-      this.$makeFriend.disabled = true;
-      await this.makeFriend(this.id);
-      this.$makeFriend.style.display = "none";
-      console.log("success");
-    };
-  }
-
-  attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === "name") {
-      this.$friendName.innerHTML = newValue;
-    } else if (attrName === "email") {
-      this.$friendEmail.innerHTML = newValue;
-    } else if (attrName === "is-friend") {
-      if (newValue === "true") {
-        this.$makeFriend.style.display = "none";
-      } else if (newValue === "false") {
-        this.$makeFriend.style.display = "block";
-      }
+        this.id = id;
+        this.setAttribute("name", name);
+        this.setAttribute("email", email);
+        this.setAttribute("is-friend", isFriend);
     }
-  }
-  async makeFriend(userId) {
-    let currentUser = getCurrentUser();
-    await firebase
-      .firestore()
-      .collection("friends")
-      .add({ relation: [currentUser.id, userId] });
-  }
+
+    static get observedAttributes() {
+        return ["name", "email", "is-friend"];
+    }
+
+    connectedCallback() {
+        this.onclick = () => {
+            console.log("chuyen sang chat voi " + this.getAttribute("name"));
+            router.navigate("/chat/" + this.id);
+        };
+
+        this.$makeFriend.onclick = async () => {
+            this.$makeFriend.disabled = true;
+            await this.makeFriend(this.id);
+            this.$makeFriend.style.display = "none";
+            console.log("success");
+        };
+    }
+
+    attributeChangedCallback(attrName, oldValue, newValue) {
+        if (attrName === "name") {
+            this.$friendName.innerHTML = newValue;
+        } else if (attrName === "email") {
+            this.$friendEmail.innerHTML = newValue;
+        } else if (attrName === "is-friend") {
+            if (newValue === "true") {
+                this.$makeFriend.style.display = "none";
+            } else if (newValue === "false") {
+                this.$makeFriend.style.display = "block";
+            }
+        }
+    }
+    async makeFriend(userId) {
+        let currentUser = getCurrentUser();
+        await firebase
+            .firestore()
+            .collection("friends")
+            .add({ relation: [currentUser.id, userId] });
+    }
 }
 
 window.customElements.define("friend-container", FriendContainer);
