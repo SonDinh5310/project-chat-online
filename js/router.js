@@ -1,4 +1,5 @@
 import ChatScreen from "./screens/chatScreen.js";
+import { getCurrentUser } from "./utils.js";
 
 let $app = document.getElementById("app");
 let root = null;
@@ -20,14 +21,32 @@ router
   .resolve();
 
 router
-  .on("/chat/:id", function (params) {
-    $app.innerHTML = " ";
+  .on("/chat/:id", async function (params) {
+    let currentUser = getCurrentUser();
+    if (!currentUser) {
+      router.navigate("/sign-in");
+      return;
+    }
+
+    $app.innerHTML = "";
     let $chatScreen = new ChatScreen();
-    let $chatContainer = $chatScreen.shadowRoot.querySelector("chat-container");
-    console.log($chatContainer);
-    console.log(params);
-    $chatContainer.setAttribute("current-chat", params.id);
     $app.appendChild($chatScreen);
+
+    let friendsData = await $chatScreen.loadFirends();
+    console.log(friendsData);
+    if (friendsData.length === 0) {
+      return;
+    }
+    let firstFriend = friendsData[0];
+
+    if (params.id === 0) {
+      router.navigate("/chat/" + firstFriend.id);
+      return;
+    }
+
+    let $chatContainer = $chatScreen.shadowRoot.querySelector("chat-container"); 
+    $chatContainer.setAttribute("current-chat", params.id);
   })
   .resolve();
+
 window.router = router;
